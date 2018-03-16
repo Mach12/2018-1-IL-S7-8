@@ -49,7 +49,7 @@ namespace ITI.Work.Tests
             state.CheckRunning().Should().BeFalse();
 
             state.GetSpeed().Should().Be( 0 );
-            state.SetSpeed( 3 );
+            state = state.SetSpeed( 3 );
             state.GetSpeed().Should().Be( 3 );
         }
     }
