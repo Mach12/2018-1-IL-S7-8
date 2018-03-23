@@ -32,8 +32,6 @@ namespace ITI.Work.Tests
             ThisThrow.Should().Throw<OverflowException>();
         }
 
-
-
         [Test]
         public void playing_with_bitflags()
         {
