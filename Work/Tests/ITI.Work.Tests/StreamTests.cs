@@ -1,5 +1,6 @@
 using FluentAssertions;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
@@ -46,6 +47,91 @@ namespace ITI.Work.Tests
 
         }
 
+        [TestCase( "a password" )]
+        [TestCase( "another one" )]
+        public void Krabouille_stream_basically_works( string password )
+        {
+            byte[] data = new byte[] { 0, 1, 2, 3, 4 };
 
+            byte[] written = Write( data, password );
+            written.Should().NotBeEquivalentTo( data );
+
+            byte[] readBack = Read( written, password );
+            readBack.Should().BeEquivalentTo( data );
+
+            byte[] readFailed = Read( written, password + password );
+            readFailed.Should().NotBeEquivalentTo( data );
+        }
+
+        [Test]
+        public void Krabouille_stream_is_password_dependent()
+        {
+            byte[] content = File.ReadAllBytes( ThisFilePath() );
+
+            byte[] f = Write( content, "first" );
+            byte[] s = Write( content, "second" );
+
+            f.Should().NotBeEquivalentTo( content );
+            s.Should().NotBeEquivalentTo( content );
+            f.Should().NotBeEquivalentTo( s );
+
+            byte[] fBack = Read( f, "first" );
+            byte[] sBack = Read( s, "second" );
+
+            fBack.Should().BeEquivalentTo( content );
+            sBack.Should().BeEquivalentTo( content );
+        }
+
+        [Test]
+        public void a_good_Krabouille_stream_is_non_deterministic()
+        {
+            byte[] content = File.ReadAllBytes( ThisFilePath() );
+
+            byte[] f = Write( content, "a password" );
+            byte[] s = Write( content, "a password" );
+
+            f.Should().NotBeEquivalentTo( content );
+            s.Should().NotBeEquivalentTo( content );
+            f.Should().NotBeEquivalentTo( s );
+
+            byte[] fBack = Read( f, "a password" );
+            byte[] sBack = Read( s, "a password" );
+
+            fBack.Should().BeEquivalentTo( content );
+            sBack.Should().BeEquivalentTo( content );
+        }
+
+        byte[] Write( byte[] data, string password )
+        {
+            using( var m = new MemoryStream() )
+            {
+                using( var k = new KrabouilleStream( m, KrabouilleMode.Krabouille, password ) )
+                {
+                    k.Write( data, 0, data.Length );
+                    k.Flush();
+                }
+                return m.ToArray();
+            }
+        }
+
+        byte[] Read( byte[] data, string password )
+        {
+            List<byte> result = new List<byte>();
+            using( var m = new MemoryStream( data ) )
+            {
+                byte[] buffer = new byte[128];
+                using( var uk = new KrabouilleStream( m, KrabouilleMode.Unkrabouille, password ) )
+                {
+                    int nbRead;
+                    while( (nbRead = uk.Read( buffer, 0, buffer.Length )) > 0 )
+                    {
+                        for( int i = 0; i < nbRead; ++i ) result.Add( buffer[i] );
+                    }
+
+                }
+                return result.ToArray();
+            }
+        }
     }
+
 }
