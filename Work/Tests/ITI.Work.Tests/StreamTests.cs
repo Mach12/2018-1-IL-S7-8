@@ -65,6 +65,7 @@ namespace ITI.Work.Tests
 
         [TestCase( "p1", 3 )]
         [TestCase( "p2", 73 )]
+        [TestCase( "p3", 273 )]
         public void Krabouille_stream_on_file( string pwd, int bufferSize )
         {
             string original = ThisFilePath();
