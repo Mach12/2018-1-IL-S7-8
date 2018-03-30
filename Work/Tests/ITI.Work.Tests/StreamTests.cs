@@ -59,9 +59,8 @@ namespace ITI.Work.Tests
             byte[] readBack = Read( written, password );
             readBack.Should().BeEquivalentTo( data );
 
-            // Waiting for actual password support.
-            byte[] readFailed = Read( written, password + password );
-            //readFailed.Should().NotBeEquivalentTo( data );
+            byte[] readFailed = Read( written, "!" + password );
+            readFailed.Should().NotBeEquivalentTo( data );
         }
 
         [TestCase( "p1", 3 )]
