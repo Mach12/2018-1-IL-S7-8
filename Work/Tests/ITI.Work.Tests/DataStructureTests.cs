@@ -16,7 +16,7 @@ namespace ITI.Work.Tests
         {
             var myList = new ITIListInt();
             myList.Add( 3172 );
-            myList[0].Should().Be( 3712 );
+            myList[0].Should().Be( 3172 );
             myList[0] = -67;
             myList[0].Should().Be( -67 );
         }
