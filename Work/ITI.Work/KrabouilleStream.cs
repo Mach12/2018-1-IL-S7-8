@@ -20,51 +20,43 @@ namespace ITI.Work
 
     public class KrabouilleStream : Stream
     {
+        readonly Stream _inner;
+        readonly KrabouilleMode _mode;
+        long _position;
+        readonly byte[] _workingBuffer;
+
         public KrabouilleStream( Stream inner, KrabouilleMode mode, string password )
         {
-            if( String.IsNullOrEmpty( password ) ) throw new ArgumentException();
-
-            _inner = inner ?? throw new ArgumentNullException();
+            if( inner == null ) throw new ArgumentNullException( nameof( inner ) );
+            if( String.IsNullOrEmpty( password ) ) throw new ArgumentNullException( nameof( password ) );
+            if( !inner.CanWrite && mode == KrabouilleMode.Krabouille )
+            {
+                throw new ArgumentException( "inner must be writable for Krabouille mode.", nameof( inner ) );
+            }
+            if( !inner.CanRead && mode == KrabouilleMode.Unkrabouille )
+            {
+                throw new ArgumentException( "inner must be readable for Unkrabouille mode.", nameof( inner ) );
+            }
+            if( _mode == KrabouilleMode.Krabouille ) _workingBuffer = new byte[256];
+            _inner = inner;
             _mode = mode;
-            _password = password;
         }
 
-        private Stream _inner;
-        private KrabouilleMode _mode;
-        private string _password;
-
-        public override bool CanRead => _mode == KrabouilleMode.Unkrabouille && _inner.CanRead;
+        public override bool CanRead => _mode == KrabouilleMode.Unkrabouille;
 
         public override bool CanSeek => false;
 
-        public override bool CanWrite => _mode == KrabouilleMode.Krabouille && _inner.CanWrite;
+        public override bool CanWrite => _mode == KrabouilleMode.Krabouille;
 
-        public override long Length => _inner.Length;
+        public override long Length => throw new NotSupportedException();
 
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-        private byte PasswordAt( int index )
+        public override long Position
         {
-            return (byte)_password[ index % _password.Length ];
+            get => _position;
+            set => throw new NotSupportedException();
         }
 
-        public override void Flush()
-        {
-            _inner.Flush();
-        }
-
-        public override int Read( byte[] buffer, int offset, int count )
-        {
-            int actualCount = _inner.Read( buffer, offset, count );
-
-            for( int i = 0; i < actualCount; ++i )
-            {
-                byte keyByte = PasswordAt( offset + i );
-                buffer[ i ] ^= keyByte;
-            }
-
-            return actualCount;
-        }
+        public override void Flush() => _inner.Flush();
 
         public override long Seek( long offset, SeekOrigin origin )
         {
@@ -73,18 +65,30 @@ namespace ITI.Work
 
         public override void SetLength( long value )
         {
-            _inner.SetLength( value );
+            throw new NotSupportedException();
+        }
+
+        public override int Read( byte[] buffer, int offset, int count )
+        {
+            if( !CanRead ) throw new InvalidOperationException();
+
+            int nbRead = _inner.Read( buffer, offset, count );
+            for( int i = 0; i < nbRead; ++i )
+            {
+                buffer[offset+i] = (byte)(buffer[offset + i] + 1);
+            }
+            return nbRead;
         }
 
         public override void Write( byte[] buffer, int offset, int count )
         {
-            byte[] newBuf = new byte[count];
-            Array.Copy( buffer, newBuf, count );
+            if( !CanWrite ) throw new InvalidOperationException();
 
+            /// TODO: use _workingBuffer for _inner instead of
+            /// modifying the client buffer[] content!
             for( int i = 0; i < count; ++i )
             {
-                byte keyByte = PasswordAt( offset + i );
-                newBuf[ i ] = (byte)(keyByte^buffer[i]);
+                buffer[offset + i] = (byte)(buffer[offset + i] - 1);
             }
 
             _inner.Write( buffer, offset, count );
