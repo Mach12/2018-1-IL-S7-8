@@ -15,7 +15,7 @@ namespace ITI.Work.Tests
         public void how_list_works()
         {
             var myList = new ITIListInt();
-            myList.Add( 3172 );
+            myList.Add( 3712 );
             myList[0].Should().Be( 3172 );
             myList[0] = -67;
             myList[0].Should().Be( -67 );
@@ -46,7 +46,7 @@ namespace ITI.Work.Tests
                 myList.InsertAt( r.Next() % (myList.Count + 1), i + 1 );
             }
 
-            var checkList = new ITIListInt( listSize );
+            var checkList = new int[ listSize ];
 
             for( int i = 0; i < listSize; ++i )
             {
@@ -55,7 +55,7 @@ namespace ITI.Work.Tests
                 checkList[theI - 1].Should().Be( 0 );
                 checkList[theI - 1] = 1;
             }
-            for( int i = 0; i < checkList.Count; ++i )
+            for( int i = 0; i < checkList.Length; ++i )
             {
                 checkList[i].Should().Be( 1 );
             }
