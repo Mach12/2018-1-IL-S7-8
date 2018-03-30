@@ -25,6 +25,8 @@ namespace ITI.Work
         long _position;
         readonly byte[] _workingBuffer;
         readonly byte[] _secretKey;
+        int _seed;
+        Random _rand;
 
         public KrabouilleStream( Stream inner, KrabouilleMode mode, string password )
         {
@@ -38,8 +40,13 @@ namespace ITI.Work
             {
                 throw new ArgumentException( "inner must be readable for Unkrabouille mode.", nameof( inner ) );
             }
-            if( _mode == KrabouilleMode.Krabouille ) _workingBuffer = new byte[256];
+            if( _mode == KrabouilleMode.Krabouille )
+            {
+                _workingBuffer = new byte[256];
+                _seed = Environment.TickCount * inner.GetHashCode();
+            }
             _secretKey = Encoding.UTF8.GetBytes( password );
+
             _inner = inner;
             _mode = mode;
         }
@@ -73,11 +80,26 @@ namespace ITI.Work
         public override int Read( byte[] buffer, int offset, int count )
         {
             if( !CanRead ) throw new InvalidOperationException();
+            if( _position == 0 )
+            {
+                byte b0 = (byte)_inner.ReadByte();
+                byte b1 = (byte)_inner.ReadByte();
+                byte b2 = (byte)_inner.ReadByte();
+                byte b3 = (byte)_inner.ReadByte();
+
+                //_seed = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+                _seed = (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
+                _rand = new Random( _seed );
+            }
 
             int nbRead = _inner.Read( buffer, offset, count );
             for( int i = 0; i < nbRead; ++i )
             {
-                buffer[offset+i] ^= _secretKey[_position % _secretKey.Length];
+                byte bSecret = _secretKey[_position % _secretKey.Length];
+                byte savedValue = buffer[offset + i];
+                buffer[offset+i] ^= bSecret;
+                byte newSecret = (byte)((bSecret + savedValue)^_rand.Next());
+                _secretKey[_position % _secretKey.Length] = newSecret;
                 _position++;
             }
             return nbRead;
@@ -86,6 +108,14 @@ namespace ITI.Work
         public override void Write( byte[] buffer, int offset, int count )
         {
             if( !CanWrite ) throw new InvalidOperationException();
+            if( _position == 0 )
+            {
+                _inner.WriteByte( (byte) (_seed & 0xFF ) );
+                _inner.WriteByte( (byte)( (_seed & 0xFF00) >> 8) );
+                _inner.WriteByte( (byte)( (_seed >> 16) & 255) );
+                _inner.WriteByte( (byte)( (_seed >> 24) & 0b111_111) );
+                _rand = new Random( _seed );
+            }
 
             while( count > 0 )
             {
@@ -112,7 +142,7 @@ namespace ITI.Work
             {
                 byte bSecret = _secretKey[_position % _secretKey.Length];
                 byte newValue = _workingBuffer[i] ^= bSecret;
-                byte newSecret = (byte)(bSecret + newValue);
+                byte newSecret = (byte)((bSecret + newValue)^_rand.Next());
                 _secretKey[_position % _secretKey.Length] = newSecret;
                 _position++;
             }

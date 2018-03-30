@@ -80,7 +80,7 @@ namespace ITI.Work.Tests
                 o.CopyTo( k, bufferSize );
             }
 
-            //File.ReadAllBytes( original ).Should().NotBeEquivalentTo( File.ReadAllBytes( krabouilled ) );
+            File.ReadAllBytes( original ).Should().NotBeEquivalentTo( File.ReadAllBytes( krabouilled ) );
 
             // krabouilled => readBack (.txt)
             using( var source = new FileStream( krabouilled, FileMode.Open, FileAccess.Read ) )
@@ -90,7 +90,7 @@ namespace ITI.Work.Tests
                 uk.CopyTo( target, bufferSize + 1 );
             }
 
-            //File.ReadAllBytes( original ).Should().BeEquivalentTo( File.ReadAllBytes( readBack ) );
+            File.ReadAllBytes( original ).Should().BeEquivalentTo( File.ReadAllBytes( readBack ) );
         }
 
 
