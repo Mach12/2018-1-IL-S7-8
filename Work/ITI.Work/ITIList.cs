@@ -18,6 +18,7 @@ namespace ITI.Work
         {
             if( initialCapacity <= 0 ) throw new ArgumentNullException( nameof( initialCapacity ), "Must be positive." );
             _tab = new int[initialCapacity];
+            _count = initialCapacity;
         }
 
         public int Count => _count;
@@ -47,14 +48,22 @@ namespace ITI.Work
         {
             if (index < 0 ) throw new IndexOutOfRangeException();
 
-            while (index >= _tab.Length)
+            if (Count == _tab.Length)
             {
                 var newTab = new int[ _tab.Length * 2 ];
                 Array.Copy( _tab, newTab, _tab.Length );
                 _tab = newTab;
             }
 
-            _tab[ index ] = value;
+            int replacement = value;
+            for (int i = index; i <= _count; ++i )
+            {
+                int temp = _tab[ i ];
+                _tab[ i ] = replacement;
+                replacement = temp;
+            }
+
+            _count++;
         }
 
         public int IndexOf( int i )
