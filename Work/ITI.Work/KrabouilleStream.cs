@@ -113,7 +113,7 @@ namespace ITI.Work
                 _inner.WriteByte( (byte) (_seed & 0xFF ) );
                 _inner.WriteByte( (byte)( (_seed & 0xFF00) >> 8) );
                 _inner.WriteByte( (byte)( (_seed >> 16) & 255) );
-                _inner.WriteByte( (byte)( (_seed >> 24) & 0b111_111) );
+                _inner.WriteByte( (byte)( (_seed >> 24) & 0b1111_1111) );
                 _rand = new Random( _seed );
             }
 

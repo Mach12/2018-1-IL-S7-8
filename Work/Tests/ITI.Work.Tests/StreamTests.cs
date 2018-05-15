@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace ITI.Work.Tests
 {
@@ -161,6 +162,28 @@ namespace ITI.Work.Tests
 
                 }
                 return result.ToArray();
+            }
+        }
+
+
+        static void WriteChunk( Stream output, IEnumerable<Stream> inputStreams, byte[] separator )
+        {
+            bool first = true;
+            foreach( var s in inputStreams )
+            {
+                if( !first ) output.Write( separator, 0, separator.Length );
+                first = false;
+                s.CopyTo( output );
+            }
+        }
+        static async Task WriteChunkAsync( Stream output, IEnumerable<Stream> inputStreams, byte[] separator )
+        {
+            bool first = true;
+            foreach( var s in inputStreams )
+            {
+                if( !first ) await output.WriteAsync( separator, 0, separator.Length );
+                first = false;
+                await s.CopyToAsync( output );
             }
         }
     }
