@@ -14,16 +14,16 @@ namespace WebCore
 
     public class DefaultWinOrLooseService : IWinOrLooseService
     {
-        int _rate;
+        readonly IOptionsSnapshot<WinOrLooseOptions> _options;
 
-        public DefaultWinOrLooseService( IOptions<WinOrLooseOptions> options )
+        public DefaultWinOrLooseService( IOptionsSnapshot<WinOrLooseOptions> options )
         {
-            _rate = options.Value.OneOutOf;
+            _options = options;
         }
 
         public bool Win( HttpContext c )
         {
-            return Environment.TickCount % _rate == 0;
+            return Environment.TickCount % _options.Value.OneOutOf == 0;
         }
     }
 
