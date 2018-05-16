@@ -12,15 +12,17 @@ namespace WebCore
         readonly ILogger _logger;
         readonly RequestDelegate _next;
 
-        public WinOrLooseMiddleware( RequestDelegate next, ILoggerFactory loggerFactory )
+        public WinOrLooseMiddleware(
+            RequestDelegate next,
+            ILoggerFactory loggerFactory )
         {
             _next = next;
             _logger = loggerFactory.CreateLogger<WinOrLooseMiddleware>();
         }
 
-        public async Task Invoke( HttpContext context )
+        public async Task Invoke( HttpContext context, IWinOrLooseService winOrLooseService )
         {
-            if( Environment.TickCount % 2 == 0 )
+            if( !winOrLooseService.Win( context ) )
             {
                 _logger.LogTrace( "!!!! Someone lost !!!!" );
                 await context.Response.WriteAsync( "LOOSE!" );
