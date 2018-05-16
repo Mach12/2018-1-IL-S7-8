@@ -23,7 +23,7 @@ namespace WebCore
         {
             services.AddOptions();
             services.Configure<WinOrLooseOptions>( _configuration.GetSection( "WinOrLoose" ) );
-            services.AddScoped<IWinOrLooseService, WinOrLooseUserConsentService>();
+            services.AddScoped<IWinOrLooseService, DefaultWinOrLooseService>();
         }
 
         public void Configure( IApplicationBuilder app, IHostingEnvironment env )
