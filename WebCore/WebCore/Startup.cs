@@ -12,10 +12,17 @@ namespace WebCore
 {
     class Startup
     {
-        public void ConfigureServices( IServiceCollection services, IConfiguration configuration )
+        readonly IConfiguration _configuration;
+
+        public Startup( IConfiguration configuration )
+        {
+            _configuration = configuration;
+        }
+
+        public void ConfigureServices( IServiceCollection services )
         {
             services.AddOptions();
-            services.Configure<WinOrLooseOptions>( configuration.GetSection( "WinOrLoose" ) );
+            services.Configure<WinOrLooseOptions>( _configuration.GetSection( "WinOrLoose" ) );
             services.AddScoped<IWinOrLooseService, WinOrLooseUserConsentService>();
         }
 
