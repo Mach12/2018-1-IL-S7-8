@@ -22,7 +22,7 @@ namespace WebCore
 
         public async Task Invoke( HttpContext context, IWinOrLooseService winOrLooseService )
         {
-            if( !winOrLooseService.Win( context ) )
+            if( !await winOrLooseService.Win( context ) )
             {
                 _logger.LogTrace( "!!!! Someone lost !!!!" );
                 await context.Response.WriteAsync( "LOOSE!" );

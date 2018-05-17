@@ -3,12 +3,13 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebCore
 {
     public interface IWinOrLooseService
     {
-        bool Win( HttpContext c );
+        Task<bool> Win( HttpContext c );
     }
 
 
@@ -21,9 +22,9 @@ namespace WebCore
             _options = options;
         }
 
-        public bool Win( HttpContext c )
+        public Task<bool> Win( HttpContext c )
         {
-            return Environment.TickCount % _options.Value.OneOutOf == 0;
+            return Task.FromResult( Environment.TickCount % _options.Value.OneOutOf == 0 );
         }
     }
 
