@@ -28,7 +28,21 @@ namespace WebCore
 
         public void Configure( IApplicationBuilder app, IHostingEnvironment env )
         {
-            app.UseMiddleware<WinOrLooseMiddleware>();
+
+            //app.Map( "/loto", app2 =>
+            //{
+            //    app2.UseMiddleware<WinOrLooseMiddleware>();
+            //    app2.Run( async context => await context.Response.WriteAsync( "Hello World! (IN LOTO!)" ) );
+            //} );
+
+            app.MapWhen( c => c.Request.Path.StartsWithSegments( "/loto" )
+                                &&
+                              !(c.Request.Query["loto"] != "none" ), app2 =>
+            {
+                app2.UseMiddleware<WinOrLooseMiddleware>();
+                app2.Run( async context => await context.Response.WriteAsync( "Hello World! (IN LOTO!)" ) );
+            } );
+
 
             app.Run( async context => await context.Response.WriteAsync( "Hello World!" ) );
         }

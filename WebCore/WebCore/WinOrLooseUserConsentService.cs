@@ -15,7 +15,7 @@ namespace WebCore
     {
         readonly IDatabaseCurrentUserInfo _userDb;
 
-        public WinOrLooseUserConsentService( IDatabaseCurrentUserInfo userDb )
+        public WinOrLooseUserConsentService( IDatabaseCurrentUserInfo userDb = null )
         {
             _userDb = userDb;
         }
