@@ -11,6 +11,7 @@ namespace WebCore
         static void Main( string[] args )
         {
             var builder = new WebHostBuilder()
+                .UseUrls( "http://localhost:4324" )
                 .UseContentRoot( Directory.GetCurrentDirectory() )
                 .ConfigureAppConfiguration( (hostBuilderContext, confBuilder ) =>
                 {
