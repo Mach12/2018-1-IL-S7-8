@@ -15,11 +15,14 @@ namespace CT.Tokenizer.Tests
         [InlineData("3 + 7", 3 + 7)]
         [InlineData("(3 + 7)*8", (3 + 7) * 8)]
         [InlineData("(3 + 7)*(8-9)", (3 + 7) * (8 - 9))]
+        [InlineData("3 * 1 + 2", 3 * 1 + 2)]
+        [InlineData("1 - 1 + 2", 1 - 1 + 2)]
+        [InlineData("2 * 3 * 4 + 1", 2 * 3 * 4 + 1)]
+        [InlineData("4 / 2 * 3", 4 / 2 * 3)]
         public void simple_exprexxion_evaluation(string text, int result)
         {
             Evaluate(text).Should().Be(result);
         }
-
 
         static int Evaluate(string text) => EvalExpression(new Tokenizer(text));
 
@@ -35,9 +38,9 @@ namespace CT.Tokenizer.Tests
             if (t.MatchAdditive( out var op ))
             {
                 int expr = EvalExpression(t);
-                return op == TokenType.Plus
-                                ? term + expr
-                                : term - expr;
+                return op == TokenType.Plus 
+                        ? term + expr
+                        : term - expr;
             }
             return term;
         }
