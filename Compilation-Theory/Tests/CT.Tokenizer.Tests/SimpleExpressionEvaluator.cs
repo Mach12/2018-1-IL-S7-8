@@ -24,7 +24,8 @@ namespace CT.Tokenizer.Tests
         [InlineData("-3 + 5 *-6", -3 + 5 * -6)]
         [InlineData("1*-3+-7*5", 1 * -3 + -7 * 5)]
         [InlineData("-5*-4+-2", -5 * -4 + -2)]
-        public void simple_exprexxion_evaluation(string text, int result)
+        [InlineData("-5*-(4+8*-(2+5))+-2", -5 * -(4 + 8 * -(2 + 5)) + -2)]
+        public void simple_expression_evaluation(string text, int result)
         {
             Evaluate(text).Should().Be(result);
         }
@@ -78,7 +79,11 @@ namespace CT.Tokenizer.Tests
         static int EvalFactor(Tokenizer t)
         {
             if (t.Match(out int number)) return number;
-
+            if( t.Match(TokenType.Minus) )
+            {
+                if (t.Match(out int positive)) return -positive;
+                throw new Exception("Expected number.");
+            }
             if( t.Match( TokenType.OpenPar ) )
             {
                 int expr = EvalExpression(t);
