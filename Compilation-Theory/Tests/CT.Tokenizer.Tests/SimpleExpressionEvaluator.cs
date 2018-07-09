@@ -20,6 +20,10 @@ namespace CT.Tokenizer.Tests
         [InlineData("2 * 3 * 4 + 1", 2 * 3 * 4 + 1)]
         [InlineData("4 / 2 * 3", 4 / 2 * 3)]
         [InlineData("3 + 5 * 125 / 7 - 6 + 10 ", 3 + 5 * 125 / 7 - 6 + 10)]
+
+        [InlineData("-3 + 5 *-6", -3 + 5 * -6)]
+        [InlineData("1*-3+-7*5", 1 * -3 + -7 * 5)]
+        [InlineData("-5*-4+-2", -5 * -4 + -2)]
         public void simple_exprexxion_evaluation(string text, int result)
         {
             Evaluate(text).Should().Be(result);
