@@ -32,10 +32,8 @@ namespace CT.Tokenizer.Tests
         static int EvalExpression(Tokenizer t)
         {
             int term = EvalTerm(t);
-            if (t.Current == TokenType.Plus || t.Current == TokenType.Minus)
+            if (t.MatchAdditive( out var op ))
             {
-                var op = t.Current;
-                t.Next();
                 int expr = EvalExpression(t);
                 return op == TokenType.Plus
                                 ? term + expr
@@ -52,10 +50,8 @@ namespace CT.Tokenizer.Tests
         static int EvalTerm(Tokenizer t)
         {
             int factor = EvalFactor(t);
-            if (t.Current == TokenType.Mult || t.Current == TokenType.Div)
+            if (t.MatchMultiplicative( out var op ))
             {
-                var op = t.Current;
-                t.Next();
                 int term = EvalTerm(t);
                 return op == TokenType.Mult
                                 ? factor * term
@@ -71,18 +67,12 @@ namespace CT.Tokenizer.Tests
         /// <returns></returns>
         static int EvalFactor(Tokenizer t)
         {
-            if( t.Current == TokenType.Integer )
+            if (t.Match(out int number)) return number;
+
+            if( t.Match( TokenType.OpenPar ) )
             {
-                int v = t.IntegerValue;
-                t.Next();
-                return v;
-            }
-            if( t.Current == TokenType.OpenPar )
-            {
-                t.Next();
                 int expr = EvalExpression(t);
-                if (t.Current != TokenType.ClosePar) throw new Exception("Expected ).");
-                t.Next();
+                if (!t.Match( TokenType.ClosePar)) throw new Exception("Expected ).");
                 return expr;
             }
             throw new Exception("Syntax error.");

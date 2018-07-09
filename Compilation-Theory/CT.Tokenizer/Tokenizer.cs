@@ -63,5 +63,47 @@ namespace CT.Tokenizer
             return _current = TokenType.Error;
         }
 
+        public bool MatchMultiplicative(out TokenType op)
+        {
+            op = Current;
+            if (Current == TokenType.Mult || Current == TokenType.Div)
+            {
+                Next();
+                return true;
+            }
+            return false;
+        }
+        public bool MatchAdditive(out TokenType op)
+        {
+            op = Current;
+            if (Current == TokenType.Plus || Current == TokenType.Minus)
+            {
+                Next();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Match( TokenType type )
+        {
+            if( Current == type )
+            {
+                Next();
+                return true;
+            }
+            return false;
+        }
+
+        public bool Match(out int integer)
+        {
+            if( Current == TokenType.Integer )
+            {
+                integer = IntegerValue;
+                Next();
+                return true;
+            }
+            integer = 0;
+            return false;
+        }
     }
 }
