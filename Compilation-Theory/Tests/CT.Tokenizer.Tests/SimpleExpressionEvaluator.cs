@@ -19,6 +19,7 @@ namespace CT.Tokenizer.Tests
         [InlineData("1 - 1 + 2", 1 - 1 + 2)]
         [InlineData("2 * 3 * 4 + 1", 2 * 3 * 4 + 1)]
         [InlineData("4 / 2 * 3", 4 / 2 * 3)]
+        [InlineData("3 + 5 * 125 / 7 - 6 + 10 ", 3 + 5 * 125 / 7 - 6 + 10)]
         public void simple_exprexxion_evaluation(string text, int result)
         {
             Evaluate(text).Should().Be(result);
@@ -28,37 +29,39 @@ namespace CT.Tokenizer.Tests
 
 
         /// <summary>
-        /// expression → terme  opérateur-additif  expression  |  terme 
+        /// Buggy: expression → terme  opérateur-additif  expression  |  terme 
+        /// Fixed: expression → terme  (opérateur-additif  terme)* 
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
         static int EvalExpression(Tokenizer t)
         {
             int term = EvalTerm(t);
-            if (t.MatchAdditive( out var op ))
+            while (t.MatchAdditive(out var op))
             {
-                int expr = EvalExpression(t);
-                return op == TokenType.Plus 
-                        ? term + expr
-                        : term - expr;
+                int nextTerm = EvalTerm(t);
+                if (op == TokenType.Plus)
+                    term += nextTerm;
+                else term -= nextTerm;
             }
             return term;
         }
 
         /// <summary>
-        /// terme → facteur  opérateur-multiplicatif  terme  |  facteur 
+        /// Buggy: terme → facteur  opérateur-multiplicatif  terme  |  facteur 
+        /// Fixed: terme → facteur  (opérateur-multiplicatif  facteur)*
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
         static int EvalTerm(Tokenizer t)
         {
             int factor = EvalFactor(t);
-            if (t.MatchMultiplicative( out var op ))
+            while (t.MatchMultiplicative(out var op))
             {
-                int term = EvalTerm(t);
-                return op == TokenType.Mult
-                                ? factor * term
-                                : factor / term;
+                int nextFactor = EvalFactor(t);
+                if (op == TokenType.Mult)
+                    factor *= nextFactor;
+                else factor /= nextFactor;
             }
             return factor;
         }
