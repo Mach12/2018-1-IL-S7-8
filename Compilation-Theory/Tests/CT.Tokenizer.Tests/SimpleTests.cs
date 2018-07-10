@@ -2,7 +2,7 @@ using FluentAssertions;
 using System;
 using Xunit;
 
-namespace CT.Tokenizer.Tests
+namespace CT.Tests
 {
     public class SimpleTests
     {

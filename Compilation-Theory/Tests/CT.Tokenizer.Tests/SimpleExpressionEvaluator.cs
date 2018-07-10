@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace CT.Tokenizer.Tests
+namespace CT.Tests
 {
 
     public class SimpleExpressionEvaluator
@@ -24,7 +24,8 @@ namespace CT.Tokenizer.Tests
         [InlineData("-3 + 5 *-6", -3 + 5 * -6)]
         [InlineData("1*-3+-7*5", 1 * -3 + -7 * 5)]
         [InlineData("-5*-4+-2", -5 * -4 + -2)]
-        public void simple_exprexxion_evaluation(string text, int result)
+        [InlineData("-5*-(4+8*-(2+5))+-2", -5 * -(4 + 8 * -(2 + 5)) + -2)]
+        public void simple_expression_evaluation(string text, int result)
         {
             Evaluate(text).Should().Be(result);
         }
@@ -71,18 +72,28 @@ namespace CT.Tokenizer.Tests
         }
 
         /// <summary>
-        /// facteur → nombre  |  ‘(’  expression  ‘)’ 
+        /// facteur → ‘-’ facteur positif | facteur positif 
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
         static int EvalFactor(Tokenizer t)
         {
-            if (t.Match(out int number)) return number;
+            bool isNegative = t.Match(TokenType.Minus);
+            return isNegative ? -EvalPositiveFactor(t) : EvalPositiveFactor(t);
+        }
 
-            if( t.Match( TokenType.OpenPar ) )
+        /// <summary>
+        /// facteur positif → nombre  |  ‘(’  expression  ‘)’ 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        static int EvalPositiveFactor(Tokenizer t)
+        {
+            if (t.Match(out int number)) return number;
+            if (t.Match(TokenType.OpenPar))
             {
                 int expr = EvalExpression(t);
-                if (!t.Match( TokenType.ClosePar)) throw new Exception("Expected ).");
+                if (!t.Match(TokenType.ClosePar)) throw new Exception("Expected ).");
                 return expr;
             }
             throw new Exception("Syntax error.");
