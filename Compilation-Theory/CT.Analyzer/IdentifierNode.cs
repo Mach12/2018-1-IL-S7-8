@@ -15,5 +15,8 @@ namespace CT
         public string Name { get; }
 
         public override string ToString() => Name;
+
+        internal override void Accept(NodeVisitor v) => v.Visit(this);
+
     }
 }

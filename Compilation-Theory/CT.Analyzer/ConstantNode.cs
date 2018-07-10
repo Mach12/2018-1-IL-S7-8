@@ -16,5 +16,8 @@ namespace CT
 
 
         public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
+
+        internal override void Accept(NodeVisitor v) => v.Visit(this);
+
     }
 }

@@ -35,5 +35,7 @@ namespace CT
         }
 
         public override string ToString() => $"({Left}{DisplayType}{Right})";
+
+        internal override void Accept(NodeVisitor v) => v.Visit(this);
     }
 }

@@ -14,5 +14,8 @@ namespace CT
         public Node Operand { get; }
 
         public override string ToString() => $"NEG[{Operand}]";
+
+        internal override void Accept(NodeVisitor v) => v.Visit(this);
+
     }
 }

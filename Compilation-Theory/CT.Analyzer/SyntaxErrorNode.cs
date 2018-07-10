@@ -12,5 +12,8 @@ namespace CT
         }
 
         public string Message { get; }
+
+        internal override void Accept(NodeVisitor v) => v.Visit(this);
+
     }
 }
