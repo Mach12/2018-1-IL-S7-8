@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CT.Tokenizer.Tests", "Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CT.Analyzer", "CT.Analyzer\CT.Analyzer.csproj", "{32BE5863-96CD-49BB-B521-83A441DB1DC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CT.Analyser.Tests", "Tests\CT.Analyser.Tests\CT.Analyser.Tests.csproj", "{4545299D-2063-492F-A778-B99AFE97D82A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,12 +31,17 @@ Global
 		{32BE5863-96CD-49BB-B521-83A441DB1DC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32BE5863-96CD-49BB-B521-83A441DB1DC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32BE5863-96CD-49BB-B521-83A441DB1DC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4545299D-2063-492F-A778-B99AFE97D82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4545299D-2063-492F-A778-B99AFE97D82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4545299D-2063-492F-A778-B99AFE97D82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4545299D-2063-492F-A778-B99AFE97D82A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7696FEE2-48F6-4C46-ACD7-AB6C50BB4C28} = {0164FD2D-191B-41F6-9230-FAAA293363A3}
+		{4545299D-2063-492F-A778-B99AFE97D82A} = {0164FD2D-191B-41F6-9230-FAAA293363A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5CDA1CB3-E4BE-47D9-B252-843A4BF75B3E}
