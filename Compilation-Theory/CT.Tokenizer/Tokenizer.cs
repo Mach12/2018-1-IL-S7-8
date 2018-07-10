@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace CT
 {
@@ -8,9 +9,12 @@ namespace CT
         int _headPos;
         TokenType _current;
         int _currentInteger;
+        string _currentIdentifier;
+        readonly StringBuilder _buffer;
 
         public Tokenizer( string text )
         {
+            _buffer = new StringBuilder();
             _text = text;
             Next();
         }
@@ -25,6 +29,8 @@ namespace CT
         public TokenType Current => _current;
 
         public int IntegerValue => _currentInteger;
+
+        public string IdentifierValue => _currentIdentifier;
 
         public TokenType Next()
         {
@@ -44,6 +50,7 @@ namespace CT
                 case ')': return _current = TokenType.ClosePar;
             }
             // Handling non-terminals.
+            _buffer.Clear();
             int v = c - '0';
             if (v > 0 && v <= 9)
             {
@@ -59,6 +66,20 @@ namespace CT
                 }
                 _currentInteger = v;
                 return _current = TokenType.Integer;
+            }
+            if (Char.IsLetter(c))
+            {
+                _buffer.Append(c);
+                while (!IsEnd)
+                {
+                    if (Char.IsLetterOrDigit(Head))
+                    {
+                        _buffer.Append(Forward());
+                    }
+                    else break;
+                }
+                _currentIdentifier = _buffer.ToString();
+                return _current = TokenType.Identifier;
             }
             return _current = TokenType.Error;
         }
@@ -96,13 +117,24 @@ namespace CT
 
         public bool Match(out int integer)
         {
-            if( Current == TokenType.Integer )
+            if (Current == TokenType.Integer)
             {
                 integer = IntegerValue;
                 Next();
                 return true;
             }
             integer = 0;
+            return false;
+        }
+        public bool Match(out string identifier)
+        {
+            if (Current == TokenType.Identifier)
+            {
+                identifier = IdentifierValue;
+                Next();
+                return true;
+            }
+            identifier = null;
             return false;
         }
     }

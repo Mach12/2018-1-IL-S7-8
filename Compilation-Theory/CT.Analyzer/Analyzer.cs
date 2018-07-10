@@ -52,7 +52,8 @@ namespace CT
         /// <returns></returns>
         static Node ParsePositiveFactor(Tokenizer t)
         {
-            if (t.Match(out int number)) return new ConstantNode( number );
+            if (t.Match(out int number)) return new ConstantNode(number);
+            if (t.Match(out string identifier)) return new IdentifierNode(identifier);
             if (t.Match(TokenType.OpenPar))
             {
                 Node expr = ParseExpression(t);
