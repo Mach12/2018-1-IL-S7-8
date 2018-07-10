@@ -28,6 +28,9 @@ namespace CT.Tests
         public void evaluating_constants_only(string text, int result)
         {
             var ast = Analyzer.Parse(text);
+            
+            ValidationVisitor.Check(ast).SyntaxErrorNodeCount.Should().Be(0, "No syntax error");
+
             var v = new EvaluationVisitor();
             v.Visit(ast);
             v.Result.Should().Be(result);

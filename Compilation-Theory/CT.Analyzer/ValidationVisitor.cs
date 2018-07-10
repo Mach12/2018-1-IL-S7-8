@@ -27,5 +27,12 @@ namespace CT
             base.Visit(n);
         }
 
+
+        public static (int TotalNodeCount, int SyntaxErrorNodeCount) Check( Node n )
+        {
+            var v = new ValidationVisitor();
+            v.Visit(n);
+            return (v.TotalNodeCount, v.SyntaxtErrorNodeCount);
+        }
     }
 }
