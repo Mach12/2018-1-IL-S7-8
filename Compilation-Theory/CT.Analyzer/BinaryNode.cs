@@ -18,5 +18,22 @@ namespace CT
         public Node Left { get; }
 
         public Node Right { get; }
+
+        public string DisplayType
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case TokenType.Div: return "/";
+                    case TokenType.Mult: return "*";
+                    case TokenType.Minus: return "-";
+                    case TokenType.Plus: return "+";
+                }
+                throw new NotSupportedException("Can not be here!");
+            }
+        }
+
+        public override string ToString() => $"({Left}{DisplayType}{Right})";
     }
 }

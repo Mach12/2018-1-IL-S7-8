@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace CT
@@ -14,5 +15,6 @@ namespace CT
         public int Value { get; }
 
 
+        public override string ToString() => Value.ToString(CultureInfo.InvariantCulture);
     }
 }

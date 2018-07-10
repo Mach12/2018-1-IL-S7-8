@@ -12,5 +12,7 @@ namespace CT
         }
 
         public Node Operand { get; }
+
+        public override string ToString() => $"NEG[{Operand}]";
     }
 }
