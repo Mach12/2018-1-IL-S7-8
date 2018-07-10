@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace CT.Tokenizer.Tests
+namespace CT.Tests
 {
 
     public class SimpleExpressionEvaluator
@@ -72,22 +72,28 @@ namespace CT.Tokenizer.Tests
         }
 
         /// <summary>
-        /// facteur → nombre  |  ‘(’  expression  ‘)’ 
+        /// facteur → ‘-’ facteur positif | facteur positif 
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
         static int EvalFactor(Tokenizer t)
         {
+            bool isNegative = t.Match(TokenType.Minus);
+            return isNegative ? -EvalPositiveFactor(t) : EvalPositiveFactor(t);
+        }
+
+        /// <summary>
+        /// facteur positif → nombre  |  ‘(’  expression  ‘)’ 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        static int EvalPositiveFactor(Tokenizer t)
+        {
             if (t.Match(out int number)) return number;
-            if( t.Match(TokenType.Minus) )
-            {
-                if (t.Match(out int positive)) return -positive;
-                throw new Exception("Expected number.");
-            }
-            if( t.Match( TokenType.OpenPar ) )
+            if (t.Match(TokenType.OpenPar))
             {
                 int expr = EvalExpression(t);
-                if (!t.Match( TokenType.ClosePar)) throw new Exception("Expected ).");
+                if (!t.Match(TokenType.ClosePar)) throw new Exception("Expected ).");
                 return expr;
             }
             throw new Exception("Syntax error.");
