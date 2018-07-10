@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CT.Tokenizer
+namespace CT
 {
     public class Tokenizer
     {
