@@ -14,6 +14,7 @@ namespace CT
         Plus,
         Minus,
         OpenPar,
-        ClosePar
+        ClosePar,
+        Identifier
     }
 }
