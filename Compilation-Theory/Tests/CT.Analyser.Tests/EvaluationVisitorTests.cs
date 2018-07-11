@@ -34,5 +34,18 @@ namespace CT.Tests
             EvaluationVisitor.Evaluate( ast ).Should().Be(result);
         }
 
+
+        [Theory]
+        [InlineData("x + y", 3, 4, 7)]
+        [InlineData("x / (y*2)", 10, 2, 10 / (2 * 2))]
+        [InlineData("-x * (y*2)", 89, 34, -89 * (34 * 2))]
+        public void evaluating_expression_only(string text, int x, int y, int result)
+        {
+            var ast = Analyzer.Parse(text);
+
+            ValidationVisitor.Check(ast).SyntaxErrorNodeCount.Should().Be(0, "No syntax error");
+
+            EvaluationVisitor.Evaluate(ast, name => name == "x" ? x : y).Should().Be(result);
+        }
     }
 }

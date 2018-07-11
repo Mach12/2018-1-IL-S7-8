@@ -6,6 +6,13 @@ namespace CT
 {
     public class EvaluationVisitor : NodeVisitor
     {
+        readonly Func<string, int> _getIdentifierValue;
+
+        public EvaluationVisitor(Func<string, int> getIdentifierValue)
+        {
+            _getIdentifierValue = getIdentifierValue ?? (name => 0);
+        }
+
         public int Result { get; private set; }
 
         public override void Visit(ConstantNode n) => Result = n.Value;
@@ -30,11 +37,21 @@ namespace CT
             }
         }
 
-        public static int Evaluate( Node n )
+        public override void Visit(IdentifierNode n)
         {
-            var v = new EvaluationVisitor();
+            Result = _getIdentifierValue(n.Name);
+        }
+
+        public static int Evaluate( Node n, Func<string, int> getIdentifierValue = null)
+        {
+            var v = new EvaluationVisitor(getIdentifierValue);
             v.Visit(n);
             return v.Result;
+        }
+
+        public static int Evaluate(Node n, IDictionary<string,int> variables )
+        {
+            return Evaluate(n, name => variables[name]);
         }
     }
 }
