@@ -8,12 +8,25 @@ namespace CT
     {
         public static Node Parse(string text) => ParseExpression(new Tokenizer(text));
 
-        public static Node ParseExpression(Tokenizer t )
+        public static Node ParseExpression(Tokenizer t)
+        {
+            Node potentialCondition = ParseSimpleExpression(t);
+            if(t.Match(TokenType.QuestionMark))
+            {
+                Node whenTrue = ParseSimpleExpression(t);
+                if (!t.Match(TokenType.Colon)) return new SyntaxErrorNode( "Expected ':'." );
+                Node whenFalse = ParseSimpleExpression(t);
+                term = new BinaryNode(op, term, ParseTerm(t));
+            }
+            return potentialCondition;
+        }
+
+        public static Node ParseSimpleExpression(Tokenizer t)
         {
             Node term = ParseTerm(t);
             while (t.MatchAdditive(out var op))
             {
-                term = new BinaryNode( op, term, ParseTerm(t));
+                term = new BinaryNode(op, term, ParseTerm(t));
             }
             return term;
         }
