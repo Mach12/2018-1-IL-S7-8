@@ -48,6 +48,24 @@ namespace CT
                 case '+': return _current = TokenType.Plus;
                 case '(': return _current = TokenType.OpenPar;
                 case ')': return _current = TokenType.ClosePar;
+                case '?': return _current = TokenType.QuestionMark;
+                case ':': return _current = TokenType.Colon;
+                case '>':
+                    if (Head != '=') return _current = TokenType.GreaterThan;
+                    Forward();
+                    return _current = TokenType.GreaterOrEqual;
+                case '<':
+                    if (Head != '=') return _current = TokenType.LowerThan;
+                    Forward();
+                    return _current = TokenType.LowerOrEqual;
+                case '=':
+                    if (Head != '=') return _current = TokenType.Error;
+                    Forward();
+                    return _current = TokenType.Equal;
+                case '!':
+                    if (Head != '=') return _current = TokenType.Error;
+                    Forward();
+                    return _current = TokenType.Diff;
             }
             // Handling non-terminals.
             _buffer.Clear();

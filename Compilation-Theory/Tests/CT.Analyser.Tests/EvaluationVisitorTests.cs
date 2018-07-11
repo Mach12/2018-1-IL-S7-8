@@ -39,7 +39,7 @@ namespace CT.Tests
         [InlineData("x + y", 3, 4, 7)]
         [InlineData("x / (y*2)", 10, 2, 10 / (2 * 2))]
         [InlineData("-x * (y*2)", 89, 34, -89 * (34 * 2))]
-        public void evaluating_expression_only(string text, int x, int y, int result)
+        public void evaluating_expressions_with_variables(string text, int x, int y, int result)
         {
             var ast = Analyzer.Parse(text);
 

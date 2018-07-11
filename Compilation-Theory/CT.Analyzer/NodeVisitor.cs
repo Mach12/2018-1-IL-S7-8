@@ -31,5 +31,12 @@ namespace CT
         {
         }
 
+        public virtual void Visit(ConditionalNode n)
+        {
+            Visit(n.Condition);
+            Visit(n.WhenTrue);
+            Visit(n.WhenFalse);
+        }
+
     }
 }

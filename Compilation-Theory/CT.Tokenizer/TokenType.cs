@@ -15,6 +15,14 @@ namespace CT
         Minus,
         OpenPar,
         ClosePar,
-        Identifier
+        Identifier,
+        QuestionMark,
+        Colon,
+        GreaterThan,
+        LowerThan,
+        GreaterOrEqual,
+        LowerOrEqual,
+        Equal,
+        Diff
     }
 }
