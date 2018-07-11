@@ -31,9 +31,7 @@ namespace CT.Tests
             
             ValidationVisitor.Check(ast).SyntaxErrorNodeCount.Should().Be(0, "No syntax error");
 
-            var v = new EvaluationVisitor();
-            v.Visit(ast);
-            v.Result.Should().Be(result);
+            EvaluationVisitor.Evaluate( ast ).Should().Be(result);
         }
 
     }
